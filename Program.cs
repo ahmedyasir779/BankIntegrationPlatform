@@ -1,7 +1,11 @@
 using BankIntegrationPlatform.Application.Interfaces;
 using BankIntegrationPlatform.Application.Services;
+using BankIntegrationPlatform.Infrastructure.Configurations;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<BankOptions>(builder.Configuration.GetSection("BankOptions"));
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
