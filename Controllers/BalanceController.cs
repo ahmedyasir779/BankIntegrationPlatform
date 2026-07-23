@@ -3,6 +3,7 @@ using BankIntegrationPlatform.Application.Interfaces;
 using BankIntegrationPlatform.Domain.Models;
 using Microsoft.Extensions.Options;
 using BankIntegrationPlatform.Infrastructure.Configurations;
+using BankIntegrationPlatform.Domain.Messages;
 
 namespace BankIntegrationPlatform.Controllers;
 
@@ -25,8 +26,27 @@ public class BalanceController : ControllerBase
     public async Task<ActionResult<BalanceResponse>> GetBalance(BalanceRequest request)
     {
         BalanceResponse response = await _bankService.GetBalanceAsync(request);
+        
+        var apiResponse = new ApiResponse<BalanceResponse>
+        {
+            Header = new ResponseHeader
+            {
+                MessageId = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid(),
+                TimestampUtc = DateTime.UtcNow,
 
-        return Ok(response);
+                Status = new ResponseStatus
+                {
+                    StatusType = "Success",
+                    StatusCode = "000",
+                    StatusDescription = "Request completed successfully."
+                }
+            },
+
+            Data = response
+        };
+
+        return Ok(apiResponse);
     }
 
     [HttpGet("config")]

@@ -16,8 +16,7 @@ public class BankService : IBankService
 
     public async Task<BalanceResponse> GetBalanceAsync(BalanceRequest request)
     {
-        IBankAdapter adapter =
-            _adapterRegistry.GetAdapter(request.BankCode);
+        var adapter = _adapterRegistry.GetAdapter(request.BankCode);
 
         return await adapter.GetBalanceAsync(request);
     }
