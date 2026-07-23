@@ -22,9 +22,9 @@ public class BalanceController : ControllerBase
     } 
 
     [HttpPost]
-    public ActionResult<BalanceResponse> GetBalance(BalanceRequest request)
+    public async Task<ActionResult<BalanceResponse>> GetBalance(BalanceRequest request)
     {
-        BalanceResponse response = _bankService.GetBalance(request);
+        BalanceResponse response = await _bankService.GetBalanceAsync(request);
 
         return Ok(response);
     }

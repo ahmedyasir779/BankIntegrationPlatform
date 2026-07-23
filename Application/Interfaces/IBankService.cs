@@ -4,5 +4,5 @@ namespace BankIntegrationPlatform.Application.Interfaces;
 
 public interface IBankService
 {
-    BalanceResponse GetBalance(BalanceRequest request);
+    Task<BalanceResponse> GetBalanceAsync(BalanceRequest request);
 }
