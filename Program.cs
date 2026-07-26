@@ -4,6 +4,7 @@ using BankIntegrationPlatform.Infrastructure.Configurations;
 using Microsoft.Extensions.Options;
 using BankIntegrationPlatform.Infrastructure.External.Adapters;
 using BankIntegrationPlatform.Infrastructure.External.AdapterRegistry;
+using BankIntegrationPlatform.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// Register our custom middleware
+app.UseMiddleware<CorrelationMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.MapControllers();
 
 app.Run();

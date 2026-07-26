@@ -4,6 +4,7 @@ using BankIntegrationPlatform.Domain.Models;
 using Microsoft.Extensions.Options;
 using BankIntegrationPlatform.Infrastructure.Configurations;
 using BankIntegrationPlatform.Domain.Messages;
+using BankIntegrationPlatform.Common;
 
 namespace BankIntegrationPlatform.Controllers;
 
@@ -20,19 +21,26 @@ public class BalanceController : ControllerBase
     {
         _bankService = bankService;
         _bankOptions = option.Value;
-    } 
+    }
 
     [HttpPost]
     public async Task<ActionResult<BalanceResponse>> GetBalance(BalanceRequest request)
     {
         BalanceResponse response = await _bankService.GetBalanceAsync(request);
-        
+
+        Guid correlationId = Guid.Empty;
+
+        if (HttpContext.Items.TryGetValue(HttpContextKeys.CorrelationId, out var value))
+        {
+            Guid.TryParse(value?.ToString(), out correlationId);
+        }
+
         var apiResponse = new ApiResponse<BalanceResponse>
         {
             Header = new ResponseHeader
             {
                 MessageId = Guid.NewGuid(),
-                CorrelationId = Guid.NewGuid(),
+                CorrelationId = correlationId,
                 TimestampUtc = DateTime.UtcNow,
 
                 Status = new ResponseStatus
