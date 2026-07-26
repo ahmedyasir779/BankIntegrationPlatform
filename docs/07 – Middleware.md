@@ -609,7 +609,7 @@ Each middleware will have a single responsibility.
 
 # Next Chapter
 
-**08 – REST APIs & HTTP Fundamentals**
+**08 – HTTP Client & External API Communication**
 
 Before we begin implementing real bank integrations, we will step back and study the HTTP protocol itself. We'll cover HTTP methods, status codes, headers, request and response bodies, REST principles, idempotency, and API versioning. Understanding these concepts will help explain why our controllers, contracts, and endpoints are designed the way they are.
 
