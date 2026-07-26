@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BankIntegration.Api/BankIntegration.Api.csproj" />
+    <Project Path="src/BankMockServer.Api/BankMockServer.Api.csproj" />
+  </Folder>
+</Solution>
