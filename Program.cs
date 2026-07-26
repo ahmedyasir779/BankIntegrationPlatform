@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using BankIntegrationPlatform.Infrastructure.External.Adapters;
 using BankIntegrationPlatform.Infrastructure.External.AdapterRegistry;
 using BankIntegrationPlatform.Middleware;
+using BankIntegrationPlatform.Infrastructure.External.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IBankAdapter, MockBankAdapter>();
 
 builder.Services.AddScoped<AdapterRegistry>();
 builder.Services.AddScoped<IBankService, BankService>();
+builder.Services.AddScoped<IBankHttpClient, BankHttpClient>();
 
 var app = builder.Build();
 
