@@ -25,7 +25,8 @@ builder.Services.AddScoped<IBankAdapter, MockBankAdapter>();
 
 builder.Services.AddScoped<AdapterRegistry>();
 builder.Services.AddScoped<IBankService, BankService>();
-builder.Services.AddScoped<IBankHttpClient, BankHttpClient>();
+// builder.Services.AddScoped<IBankHttpClient, BankHttpClient>();
+builder.Services.AddHttpClient<IBankHttpClient, BankHttpClient>();
 
 var app = builder.Build();
 
