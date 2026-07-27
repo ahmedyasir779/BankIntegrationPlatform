@@ -31,7 +31,12 @@ public class BalanceController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<BalanceResponse>> GetBalance(BalanceRequest request)
+    [ProducesResponseType(typeof(ApiResponse<BalanceResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ApiResponse<BalanceResponse>>> GetBalance(
+       BalanceRequest request)
     {
         BalanceResponse response = await _bankService.GetBalanceAsync(request);
 

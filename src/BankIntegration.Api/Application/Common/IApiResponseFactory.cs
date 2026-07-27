@@ -8,5 +8,6 @@ public interface IApiResponseFactory
 
     ApiResponse<T> Failure<T>(
         string statusCode,
-        string description);
+        string description,
+        string statusType = "Error");
 }

@@ -32,7 +32,7 @@ public class CorrelationMiddleware
             CorrelationId = correlationId,
             MessageId = Guid.NewGuid(),
             RequestTimeUtc = DateTime.UtcNow,
-            ServiceName = "BankIntegration.Api"
+            ServiceName = context.Request.Host.Value
         };
 
         context.Items[HttpContextKeys.RequestContext] = requestContext;

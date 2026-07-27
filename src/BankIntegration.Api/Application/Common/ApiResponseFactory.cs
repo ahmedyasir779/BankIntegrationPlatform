@@ -23,7 +23,7 @@ public class ApiResponseFactory : IApiResponseFactory
             {
                 CorrelationId = context.CorrelationId,
                 MessageId = context.MessageId,
-                TimestampUtc = context.RequestTimeUtc,
+                TimestampUtc = DateTime.UtcNow,
 
                 Status = new ResponseStatus
                 {
@@ -39,7 +39,8 @@ public class ApiResponseFactory : IApiResponseFactory
 
     public ApiResponse<T> Failure<T>(
     string statusCode,
-    string description)
+    string description,
+    string statusType = "Error")
     {
         var context = _requestContext.Context;
 
@@ -53,9 +54,10 @@ public class ApiResponseFactory : IApiResponseFactory
 
                 Status = new ResponseStatus
                 {
-                    StatusType = "Error",
+                    StatusType = statusType,
                     StatusCode = statusCode,
-                    StatusDescription = description
+                    StatusDescription = description,
+
                 }
             }
         };

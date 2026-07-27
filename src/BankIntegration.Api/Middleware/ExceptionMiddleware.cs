@@ -1,9 +1,8 @@
-using System.Text.Json;
+
+using BankIntegrationPlatform.Application.Common;
 
 namespace BankIntegrationPlatform.Middleware;
 
-using BankIntegrationPlatform.Domain.Messages;
-using BankIntegrationPlatform.Common;
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
@@ -14,8 +13,9 @@ public class ExceptionMiddleware
     }
 
     public async Task InvokeAsync(
-    HttpContext context,
-    IRequestContextAccessor requestContext)
+        HttpContext context,
+        IApiResponseFactory responseFactory,
+        ILogger<ExceptionMiddleware> logger)
     {
         try
         {
@@ -23,44 +23,30 @@ public class ExceptionMiddleware
         }
         catch (Exception exception)
         {
-            await HandleExceptionAsync(
-                context,
-                exception,
-                requestContext);
-        }
-    }
+            logger.LogError(exception, "Unhandled exception occurred.");
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception, IRequestContextAccessor requestContext)
-    {
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
-        var currentContext = requestContext.Context;
-
-        var response = new ApiResponse<object>
-        {
-
-            Header = new ResponseHeader
+            var response = exception switch
             {
+                BankAdapterNotFoundException =>
+                    responseFactory.Failure<object>(
+                        "404",
+                        exception.Message),
 
-                CorrelationId = currentContext.CorrelationId,
-                MessageId = currentContext.MessageId,
-                TimestampUtc = currentContext.RequestTimeUtc,
+                _ =>
+                    responseFactory.Failure<object>(
+                        "500",
+                        "Internal server error.")
+            };
 
-                Status = new ResponseStatus
-                {
-                    StatusType = "Error",
-                    StatusCode = "500",
-                    StatusDescription = exception.Message
-                }
-            },
+            context.Response.ContentType = "application/json";
 
-            Data = null
-        };
+            context.Response.StatusCode = exception switch
+            {
+                BankAdapterNotFoundException => StatusCodes.Status404NotFound,
+                _ => StatusCodes.Status500InternalServerError
+            };
 
-        var json = JsonSerializer.Serialize(response);
-
-        await context.Response.WriteAsync(json);
-
+            await context.Response.WriteAsJsonAsync(response);
+        }
     }
 }

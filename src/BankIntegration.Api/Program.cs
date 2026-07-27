@@ -31,6 +31,7 @@ builder.Services.AddScoped<IBankService, BankService>();
 builder.Services.AddHttpClient<IBankHttpClient, BankHttpClient>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IApiResponseFactory, ApiResponseFactory>();
+builder.Services.AddScoped<IRequestContextAccessor, RequestContextAccessor>();
 
 builder.Services.AddScoped<IRequestContextAccessor,
                            RequestContextAccessor>();
