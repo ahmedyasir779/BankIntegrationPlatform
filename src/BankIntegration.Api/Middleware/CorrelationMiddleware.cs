@@ -6,17 +6,21 @@ public class CorrelationMiddleware
     private const string HeaderName = "X-Correlation-Id";
 
     private readonly RequestDelegate _next;
+    // private readonly IRequestContextAccessor _requestContextAccessor;
 
-    public CorrelationMiddleware(RequestDelegate next)
+    public CorrelationMiddleware(
+        RequestDelegate next)
     {
         _next = next;
     }
 
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(
+        HttpContext context,
+        IRequestContextAccessor requestContextAccessor)
     {
         Guid correlationId;
-
+        
         if (context.Request.Headers.TryGetValue(HeaderName, out var headerValue)
             && Guid.TryParse(headerValue, out var parsedId))
         {
@@ -32,10 +36,14 @@ public class CorrelationMiddleware
             CorrelationId = correlationId,
             MessageId = Guid.NewGuid(),
             RequestTimeUtc = DateTime.UtcNow,
-            ServiceName = context.Request.Host.Value
+            ServiceName = "BankIntegration.Api",
+            ApiVersion = "v1",
+            RequestPath = context.Request.Path,
+            HttpMethod = context.Request.Method
         };
 
-        context.Items[HttpContextKeys.RequestContext] = requestContext;
+        requestContextAccessor.Context = requestContext;
+        // context.Items[HttpContextKeys.RequestContext] = requestContext;
 
         context.Response.OnStarting(() =>
         {

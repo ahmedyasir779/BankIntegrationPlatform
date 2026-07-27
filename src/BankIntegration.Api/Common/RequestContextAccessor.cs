@@ -30,5 +30,15 @@ public class RequestContextAccessor : IRequestContextAccessor
 
             throw new InvalidOperationException("RequestContext not found.");
         }
+
+        set
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+
+            if (httpContext is null)
+                throw new InvalidOperationException("No active HttpContext.");
+
+            httpContext.Items[HttpContextKeys.RequestContext] = value;
+        }
     }
 }

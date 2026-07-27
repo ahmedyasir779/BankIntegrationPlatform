@@ -30,9 +30,21 @@ public class BankService : IBankService
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
         _logger.LogInformation(
-            "Processing balance request. CorrelationId: {CorrelationId}, MessageId: {MessageId}, Bank: {BankCode}, Account: {AccountNumber}",
-            context.CorrelationId,
-            context.MessageId,
+            """
+            Request started.
+            CorrelationId: {CorrelationId}
+            MessageId: {MessageId}
+            Service: {Service}
+            Method: {Method}
+            Path: {Path}
+            Bank: {Bank}
+            Account: {Account}
+            """,
+            _requestContext.Context.CorrelationId,
+            _requestContext.Context.MessageId,
+            _requestContext.Context.ServiceName,
+            _requestContext.Context.HttpMethod,
+            _requestContext.Context.RequestPath,
             request.BankCode,
             request.AccountNumber);
 
@@ -49,13 +61,16 @@ public class BankService : IBankService
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Balance request completed. CorrelationId: {CorrelationId}, MessageId: {MessageId}, Bank: {BankCode}, Account: {AccountNumber}, Balance: {Balance}, Duration: {Duration} ms",
-            context.CorrelationId,
-            context.MessageId,
-            request.BankCode,
-            response.AccountNumber,
-            response.Balance,
+            """
+            Request completed.
+            CorrelationId: {CorrelationId}
+            MessageId: {MessageId}
+            Duration: {Duration} ms
+            """,
+            _requestContext.Context.CorrelationId,
+            _requestContext.Context.MessageId,
             stopwatch.ElapsedMilliseconds);
+
 
         return response;
     }

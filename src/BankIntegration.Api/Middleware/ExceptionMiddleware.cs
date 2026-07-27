@@ -25,26 +25,14 @@ public class ExceptionMiddleware
         {
             logger.LogError(exception, "Unhandled exception occurred.");
 
-            var response = exception switch
-            {
-                BankAdapterNotFoundException =>
-                    responseFactory.Failure<object>(
-                        "404",
-                        exception.Message),
-
-                _ =>
-                    responseFactory.Failure<object>(
-                        "500",
-                        "Internal server error.")
-            };
+            var mapping = ExceptionMapper.Map(exception);
 
             context.Response.ContentType = "application/json";
+            context.Response.StatusCode = mapping.HttpStatusCode;
 
-            context.Response.StatusCode = exception switch
-            {
-                BankAdapterNotFoundException => StatusCodes.Status404NotFound,
-                _ => StatusCodes.Status500InternalServerError
-            };
+            var response = responseFactory.Failure<object>(
+                mapping.ErrorCode,
+                mapping.Description);
 
             await context.Response.WriteAsJsonAsync(response);
         }
