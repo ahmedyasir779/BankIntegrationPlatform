@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using BankIntegrationPlatform.Infrastructure.External.Adapters;
 using BankIntegrationPlatform.Infrastructure.External.AdapterRegistry;
 using BankIntegrationPlatform.Middleware;
+using BankIntegrationPlatform.Application.Common;
 using BankIntegrationPlatform.Common;
 using BankIntegrationPlatform.Infrastructure.External.Http;
 
@@ -29,6 +30,7 @@ builder.Services.AddScoped<IBankService, BankService>();
 // builder.Services.AddScoped<IBankHttpClient, BankHttpClient>();
 builder.Services.AddHttpClient<IBankHttpClient, BankHttpClient>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IApiResponseFactory, ApiResponseFactory>();
 
 builder.Services.AddScoped<IRequestContextAccessor,
                            RequestContextAccessor>();

@@ -13,7 +13,9 @@ public class ExceptionMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(
+    HttpContext context,
+    IRequestContextAccessor requestContext)
     {
         try
         {
@@ -21,21 +23,19 @@ public class ExceptionMiddleware
         }
         catch (Exception exception)
         {
-            await HandleExceptionAsync(context, exception);
+            await HandleExceptionAsync(
+                context,
+                exception,
+                requestContext);
         }
     }
 
-    private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception, IRequestContextAccessor requestContext)
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-        Guid correlationId = Guid.Empty;
-
-        if (context.Items.TryGetValue(HttpContextKeys.CorrelationId, out var value))
-        {
-            Guid.TryParse(value?.ToString(), out correlationId);
-        }
+        var currentContext = requestContext.Context;
 
         var response = new ApiResponse<object>
         {
@@ -43,9 +43,9 @@ public class ExceptionMiddleware
             Header = new ResponseHeader
             {
 
-                MessageId = Guid.NewGuid(),
-                CorrelationId = correlationId,
-                TimestampUtc = DateTime.UtcNow,
+                CorrelationId = currentContext.CorrelationId,
+                MessageId = currentContext.MessageId,
+                TimestampUtc = currentContext.RequestTimeUtc,
 
                 Status = new ResponseStatus
                 {
