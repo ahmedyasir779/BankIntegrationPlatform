@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using BankIntegrationPlatform.Infrastructure.Configurations;
 using BankIntegrationPlatform.Domain.Messages;
 using BankIntegrationPlatform.Common;
+using BankIntegrationPlatform.Application.Common;
 
 namespace BankIntegrationPlatform.Controllers;
 
@@ -15,46 +16,31 @@ public class BalanceController : ControllerBase
     private readonly IBankService _bankService;
     private readonly BankOptions _bankOptions;
 
+    // private readonly IRequestContextAccessor _requestContext;
+
+    private readonly IApiResponseFactory _responseFactory;
+
     public BalanceController(
-        IBankService bankService,
-        IOptions<BankOptions> option)
+       IBankService bankService,
+       IOptions<BankOptions> option,
+       IApiResponseFactory responseFactory)
     {
         _bankService = bankService;
         _bankOptions = option.Value;
+        _responseFactory = responseFactory;
     }
 
     [HttpPost]
-    public async Task<ActionResult<BalanceResponse>> GetBalance(BalanceRequest request)
+    [ProducesResponseType(typeof(ApiResponse<BalanceResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ApiResponse<BalanceResponse>>> GetBalance(
+       BalanceRequest request)
     {
         BalanceResponse response = await _bankService.GetBalanceAsync(request);
 
-        Guid correlationId = Guid.Empty;
-
-        if (HttpContext.Items.TryGetValue(HttpContextKeys.CorrelationId, out var value))
-        {
-            Guid.TryParse(value?.ToString(), out correlationId);
-        }
-
-        var apiResponse = new ApiResponse<BalanceResponse>
-        {
-            Header = new ResponseHeader
-            {
-                MessageId = Guid.NewGuid(),
-                CorrelationId = correlationId,
-                TimestampUtc = DateTime.UtcNow,
-
-                Status = new ResponseStatus
-                {
-                    StatusType = "Success",
-                    StatusCode = "000",
-                    StatusDescription = "Request completed successfully."
-                }
-            },
-
-            Data = response
-        };
-
-        return Ok(apiResponse);
+        return Ok(_responseFactory.Success(response));
     }
 
     [HttpGet("config")]
