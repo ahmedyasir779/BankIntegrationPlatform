@@ -15,26 +15,36 @@ public class CorrelationMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Check if the client already sent a Correlation ID.
-        string correlationId =
-            context.Request.Headers.TryGetValue(HeaderName, out var headerValue)
-                ? headerValue.ToString()
-                : Guid.NewGuid().ToString();
+        Guid correlationId;
 
-        // Store it for the rest of this request.
-        context.Items[HttpContextKeys.CorrelationId] = correlationId;
+        if (context.Request.Headers.TryGetValue(HeaderName, out var headerValue)
+            && Guid.TryParse(headerValue, out var parsedId))
+        {
+            correlationId = parsedId;
+        }
+        else
+        {
+            correlationId = Guid.NewGuid();
+        }
 
-        // we use OnStarting to make him run this code before the header is sent
+        var requestContext = new RequestContext
+        {
+            CorrelationId = correlationId,
+            MessageId = Guid.NewGuid(),
+            RequestTimeUtc = DateTime.UtcNow,
+            ServiceName = "BankIntegration.Api"
+        };
+
+        context.Items[HttpContextKeys.RequestContext] = requestContext;
+
         context.Response.OnStarting(() =>
         {
-            context.Response.Headers[HeaderName] = correlationId;
+            context.Response.Headers[HeaderName] =
+                requestContext.CorrelationId.ToString();
+
             return Task.CompletedTask;
         });
 
-        // Continue to the next middleware.
         await _next(context);
-
-        // Include it in the response sent back to the client.
-        // context.Response.Headers[HeaderName] = correlationId;
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using BankIntegrationPlatform.Infrastructure.External.Adapters;
 using BankIntegrationPlatform.Infrastructure.External.AdapterRegistry;
 using BankIntegrationPlatform.Middleware;
+using BankIntegrationPlatform.Common;
 using BankIntegrationPlatform.Infrastructure.External.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,10 @@ builder.Services.AddScoped<AdapterRegistry>();
 builder.Services.AddScoped<IBankService, BankService>();
 // builder.Services.AddScoped<IBankHttpClient, BankHttpClient>();
 builder.Services.AddHttpClient<IBankHttpClient, BankHttpClient>();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IRequestContextAccessor,
+                           RequestContextAccessor>();
 
 var app = builder.Build();
 

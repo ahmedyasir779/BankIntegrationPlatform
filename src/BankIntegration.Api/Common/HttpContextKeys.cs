@@ -2,5 +2,5 @@ namespace BankIntegrationPlatform.Common;
 
 public static class HttpContextKeys
 {
-    public const string CorrelationId = "CorrelationId";
+    public const string RequestContext = "RequestContext";
 }
