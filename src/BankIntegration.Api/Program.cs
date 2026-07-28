@@ -71,7 +71,19 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Balance.Read", policy =>
+    {
+        policy.RequireClaim("scope", "balance.read");
+    });
+
+    options.AddPolicy("Statement.Read", policy =>
+    {
+        policy.RequireClaim("scope", "statement.read");
+    });
+});
+
 // ===========================================
 
 var app = builder.Build();

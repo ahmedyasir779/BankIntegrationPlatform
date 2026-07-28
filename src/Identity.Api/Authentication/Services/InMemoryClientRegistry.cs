@@ -19,8 +19,28 @@ public class InMemoryClientRegistry : IClientRegistry
 
         new Client
         {
-            ClientId = "mobile-app",
-            ClientSecret = "MobileSecret",
+            ClientId = "mobile-client",
+            ClientSecret = "MobileSecret123",
+            Scopes =
+            [
+                "balance.read"
+            ]
+        },
+
+        new Client
+        {
+            ClientId = "erp-client",
+            ClientSecret = "ErpSecret123",
+            Scopes =
+            [
+                "statement.read"
+            ]
+        },
+
+        new Client
+        {
+            ClientId = "partner-client",
+            ClientSecret = "PartnerSecret123",
             Scopes =
             [
                 "balance.read"
