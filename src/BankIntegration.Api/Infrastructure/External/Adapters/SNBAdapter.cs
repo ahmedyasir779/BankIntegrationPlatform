@@ -1,9 +1,9 @@
-using BankIntegrationPlatform.Domain.Models;
-using BankIntegrationPlatform.Infrastructure.External.Http;
-using BankIntegrationPlatform.Infrastructure.Configurations;
+using BankIntegration.Api.Domain.Models;
+using BankIntegration.Api.Infrastructure.External.Http;
+using BankIntegration.Api.Infrastructure.Configurations;
 using Microsoft.Extensions.Options;
 
-namespace BankIntegrationPlatform.Infrastructure.External.Adapters;
+namespace BankIntegration.Api.Infrastructure.External.Adapters;
 
 public class SNBAdapter : IBankAdapter
 {

@@ -1,6 +1,6 @@
-using BankIntegrationPlatform.Domain.Models;
+using BankIntegration.Api.Domain.Models;
 
-namespace BankIntegrationPlatform.Infrastructure.External.Adapters;
+namespace BankIntegration.Api.Infrastructure.External.Adapters;
 
 public class AlRajhiAdapter : IBankAdapter
 {

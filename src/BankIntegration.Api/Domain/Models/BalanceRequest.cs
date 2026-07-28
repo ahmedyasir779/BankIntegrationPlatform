@@ -1,4 +1,4 @@
-namespace BankIntegrationPlatform.Domain.Models;
+namespace BankIntegration.Api.Domain.Models;
 
 public class BalanceRequest
 {

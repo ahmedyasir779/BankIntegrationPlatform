@@ -1,10 +1,10 @@
-using BankIntegrationPlatform.Application.Interfaces;
-using BankIntegrationPlatform.Domain.Models;
-using BankIntegrationPlatform.Infrastructure.External.Adapters;
-using BankIntegrationPlatform.Infrastructure.External.AdapterRegistry;
-using BankIntegrationPlatform.Common;
+using BankIntegration.Api.Application.Interfaces;
+using BankIntegration.Api.Domain.Models;
+using BankIntegration.Api.Infrastructure.External.Adapters;
+using BankIntegration.Api.Infrastructure.External.AdapterRegistry;
+using BankIntegration.Api.Common;
 
-namespace BankIntegrationPlatform.Application.Services;
+namespace BankIntegration.Api.Application.Services;
 
 public class BankService : IBankService
 {

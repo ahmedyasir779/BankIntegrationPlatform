@@ -1,16 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
-using BankIntegrationPlatform.Application.Interfaces;
-using BankIntegrationPlatform.Domain.Models;
+using BankIntegration.Api.Application.Interfaces;
+using BankIntegration.Api.Domain.Models;
 using Microsoft.Extensions.Options;
-using BankIntegrationPlatform.Infrastructure.Configurations;
-using BankIntegrationPlatform.Domain.Messages;
-using BankIntegrationPlatform.Common;
-using BankIntegrationPlatform.Application.Common;
+using BankIntegration.Api.Infrastructure.Configurations;
+using BankIntegration.Api.Domain.Messages;
+using BankIntegration.Api.Common;
+using BankIntegration.Api.Application.Common;
+using Microsoft.AspNetCore.Authorization;
 
-namespace BankIntegrationPlatform.Controllers;
+namespace BankIntegration.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/balance")]
+[Authorize(Policy = "Balance.Read")]
 public class BalanceController : ControllerBase
 {
     private readonly IBankService _bankService;
@@ -33,6 +35,7 @@ public class BalanceController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<BalanceResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ApiResponse<BalanceResponse>>> GetBalance(

@@ -1,4 +1,4 @@
-namespace BankIntegrationPlatform.Infrastructure.Configurations;
+namespace BankIntegration.Api.Infrastructure.Configurations;
 
 public class BankConfiguration
 {

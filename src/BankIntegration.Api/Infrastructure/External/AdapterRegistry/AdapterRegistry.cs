@@ -1,6 +1,6 @@
-using BankIntegrationPlatform.Infrastructure.External.Adapters;
+using BankIntegration.Api.Infrastructure.External.Adapters;
 
-namespace BankIntegrationPlatform.Infrastructure.External.AdapterRegistry;
+namespace BankIntegration.Api.Infrastructure.External.AdapterRegistry;
 
 public class AdapterRegistry
 {
