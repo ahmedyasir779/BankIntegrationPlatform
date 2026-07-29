@@ -1,4 +1,4 @@
-namespace BankIntegrationPlatform.Application.Common;
+namespace BankIntegration.Api.Application.Common;
 
 public class ExceptionMapping
 {

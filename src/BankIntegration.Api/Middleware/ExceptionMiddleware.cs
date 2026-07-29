@@ -1,7 +1,7 @@
 
-using BankIntegrationPlatform.Application.Common;
+using BankIntegration.Api.Application.Common;
 
-namespace BankIntegrationPlatform.Middleware;
+namespace BankIntegration.Api.Middleware;
 
 public class ExceptionMiddleware
 {

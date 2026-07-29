@@ -1,6 +1,6 @@
 using System;
 
-namespace BankIntegrationPlatform.Domain.Messages;
+namespace BankIntegration.Api.Domain.Messages;
 
 public class ResponseHeader
 {

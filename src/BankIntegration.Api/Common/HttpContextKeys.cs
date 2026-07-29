@@ -1,4 +1,4 @@
-namespace BankIntegrationPlatform.Common;
+namespace BankIntegration.Api.Common;
 
 public static class HttpContextKeys
 {

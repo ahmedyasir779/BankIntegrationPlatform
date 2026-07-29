@@ -1,6 +1,6 @@
-namespace BankIntegrationPlatform.Middleware;
+namespace BankIntegration.Api.Middleware;
 
-using BankIntegrationPlatform.Common;
+using BankIntegration.Api.Common;
 public class CorrelationMiddleware
 {
     private const string HeaderName = "X-Correlation-Id";

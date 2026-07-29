@@ -1,13 +1,18 @@
-using BankIntegrationPlatform.Application.Interfaces;
-using BankIntegrationPlatform.Application.Services;
-using BankIntegrationPlatform.Infrastructure.Configurations;
+using BankIntegration.Api.Application.Common;
+using BankIntegration.Api.Application.Interfaces;
+using BankIntegration.Api.Common;
+using BankIntegration.Api.Gateway.Adapters;
+using BankIntegration.Api.Gateway.Http;
+using BankIntegration.Api.Gateway.Services;
+using BankIntegration.Api.Infrastructure.Configurations;
+using BankIntegration.Api.Infrastructure.Security;
+using BankIntegration.Api.INT.Routing;
+using BankIntegration.Api.Logic.Services;
+using BankIntegration.Api.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
-using BankIntegrationPlatform.Infrastructure.External.Adapters;
-using BankIntegrationPlatform.Infrastructure.External.AdapterRegistry;
-using BankIntegrationPlatform.Middleware;
-using BankIntegrationPlatform.Application.Common;
-using BankIntegrationPlatform.Common;
-using BankIntegrationPlatform.Infrastructure.External.Http;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,8 +38,52 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IApiResponseFactory, ApiResponseFactory>();
 builder.Services.AddScoped<IRequestContextAccessor, RequestContextAccessor>();
 
-builder.Services.AddScoped<IRequestContextAccessor,
-                           RequestContextAccessor>();
+builder.Services.AddScoped<IGatewayService, GatewayService>();
+
+// ===========================================
+// Configure JWT Bearer authentication.
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("JwtSettings"));
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration
+            .GetSection("JwtSettings")
+            .Get<JwtSettings>()!;
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtSettings.Issuer,
+
+            ValidateAudience = true,
+            ValidAudience = jwtSettings.Audience,
+
+            ValidateLifetime = true,
+
+            ValidateIssuerSigningKey = true,
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Balance.Read", policy =>
+    {
+        policy.RequireClaim("scope", "balance.read");
+    });
+
+    options.AddPolicy("Statement.Read", policy =>
+    {
+        policy.RequireClaim("scope", "statement.read");
+    });
+});
+
+// ===========================================
 
 var app = builder.Build();
 
@@ -50,6 +99,10 @@ app.UseHttpsRedirection();
 // Register our custom middleware
 app.UseMiddleware<CorrelationMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
+
+// JWT Bearer authentication.
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

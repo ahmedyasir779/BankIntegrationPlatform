@@ -1,6 +1,6 @@
 // using BankIntegrationPlatform.Domain.Exceptions;
 
-namespace BankIntegrationPlatform.Application.Common;
+namespace BankIntegration.Api.Application.Common;
 
 public static class ExceptionMapper
 {

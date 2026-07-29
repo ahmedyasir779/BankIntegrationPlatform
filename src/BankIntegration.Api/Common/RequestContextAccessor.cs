@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace BankIntegrationPlatform.Common;
+namespace BankIntegration.Api.Common;
 
 public class RequestContextAccessor : IRequestContextAccessor
 {

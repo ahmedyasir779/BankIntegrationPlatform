@@ -1,7 +1,7 @@
-using BankIntegrationPlatform.Common;
-using BankIntegrationPlatform.Domain.Messages;
+using BankIntegration.Api.Common;
+using BankIntegration.Api.Domain.Messages;
 
-namespace BankIntegrationPlatform.Application.Common;
+namespace BankIntegration.Api.Application.Common;
 
 public class ApiResponseFactory : IApiResponseFactory
 {
