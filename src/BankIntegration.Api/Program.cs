@@ -1,15 +1,16 @@
+using BankIntegration.Api.Application.Common;
 using BankIntegration.Api.Application.Interfaces;
-using BankIntegration.Api.Application.Services;
+using BankIntegration.Api.Common;
+using BankIntegration.Api.Gateway.Adapters;
+using BankIntegration.Api.Gateway.Http;
+using BankIntegration.Api.Gateway.Services;
 using BankIntegration.Api.Infrastructure.Configurations;
 using BankIntegration.Api.Infrastructure.Security;
-using Microsoft.Extensions.Options;
-using BankIntegration.Api.Infrastructure.External.Adapters;
-using BankIntegration.Api.Infrastructure.External.AdapterRegistry;
+using BankIntegration.Api.INT.Routing;
+using BankIntegration.Api.Logic.Services;
 using BankIntegration.Api.Middleware;
-using BankIntegration.Api.Application.Common;
-using BankIntegration.Api.Common;
-using BankIntegration.Api.Infrastructure.External.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -37,9 +38,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IApiResponseFactory, ApiResponseFactory>();
 builder.Services.AddScoped<IRequestContextAccessor, RequestContextAccessor>();
 
-builder.Services.AddScoped<IRequestContextAccessor,
-                           RequestContextAccessor>();
-
+builder.Services.AddScoped<IGatewayService, GatewayService>();
 
 // ===========================================
 // Configure JWT Bearer authentication.

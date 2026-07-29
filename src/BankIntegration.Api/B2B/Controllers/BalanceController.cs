@@ -8,7 +8,7 @@ using BankIntegration.Api.Common;
 using BankIntegration.Api.Application.Common;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BankIntegration.Api.Controllers;
+namespace BankIntegration.Api.B2B.Controllers;
 
 [ApiController]
 [Route("api/v1/balance")]

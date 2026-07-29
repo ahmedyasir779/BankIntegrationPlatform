@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 
-namespace BankIntegration.Api.Infrastructure.External.Http;
+namespace BankIntegration.Api.Gateway.Http;
 
 public class BankHttpClient : IBankHttpClient
 {

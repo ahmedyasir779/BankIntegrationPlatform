@@ -1,6 +1,6 @@
 using BankIntegration.Api.Domain.Models;
 
-namespace BankIntegration.Api.Infrastructure.External.Adapters;
+namespace BankIntegration.Api.Gateway.Adapters;
 
 public interface IBankAdapter
 {

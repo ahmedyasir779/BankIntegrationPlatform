@@ -1,25 +1,26 @@
 using BankIntegration.Api.Application.Interfaces;
-using BankIntegration.Api.Domain.Models;
-using BankIntegration.Api.Infrastructure.External.Adapters;
-using BankIntegration.Api.Infrastructure.External.AdapterRegistry;
 using BankIntegration.Api.Common;
+using BankIntegration.Api.Domain.Models;
+using BankIntegration.Api.Gateway.Contracts;
+using BankIntegration.Api.Gateway.Services;
 
-namespace BankIntegration.Api.Application.Services;
+namespace BankIntegration.Api.Logic.Services;
 
 public class BankService : IBankService
 {
-    private readonly AdapterRegistry _adapterRegistry;
+    //private readonly AdapterRegistry _adapterRegistry;
+    private readonly IGatewayService _gatewayService;
     private readonly ILogger<BankService> _logger;
 
     private readonly IRequestContextAccessor _requestContext;
 
 
     public BankService(
-        AdapterRegistry adapterRegistry,
-        ILogger<BankService> logger,
-        IRequestContextAccessor requestContext)
+    IGatewayService gatewayService,
+    ILogger<BankService> logger,
+    IRequestContextAccessor requestContext)
     {
-        _adapterRegistry = adapterRegistry;
+        _gatewayService = gatewayService;
         _logger = logger;
         _requestContext = requestContext;
     }
@@ -49,14 +50,24 @@ public class BankService : IBankService
             request.AccountNumber);
 
 
-        var adapter = _adapterRegistry.GetAdapter(request.BankCode);
+        //var adapter = _adapterRegistry.GetAdapter(request.BankCode);
 
-        _logger.LogInformation(
-            "Adapter selected. CorrelationId: {CorrelationId}, Adapter: {Adapter}",
-            context.CorrelationId,
-            adapter.GetType().Name);
+        //_logger.LogInformation(
+        //    "Adapter selected. CorrelationId: {CorrelationId}, Adapter: {Adapter}",
+        //    context.CorrelationId,
+        //    adapter.GetType().Name);
 
-        var response = await adapter.GetBalanceAsync(request);
+        //var response = await adapter.GetBalanceAsync(request);
+        //var response = await _gatewayService.GetBalanceAsync(request);
+
+
+        var gatewayRequest = new GatewayBalanceRequest
+        {
+            BankCode = request.BankCode,
+            AccountNumber = request.AccountNumber
+        };
+
+        var gatewayResponse = await _gatewayService.GetBalanceAsync(gatewayRequest);
 
         stopwatch.Stop();
 
@@ -71,7 +82,12 @@ public class BankService : IBankService
             _requestContext.Context.MessageId,
             stopwatch.ElapsedMilliseconds);
 
+        return new BalanceResponse
+        {
+            AccountNumber = gatewayResponse.AccountNumber,
+            Balance = gatewayResponse.Balance,
+            Currency = gatewayResponse.Currency
+        };
 
-        return response;
     }
 }
