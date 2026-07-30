@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Identity.Api.Infrastructure.Security;
-using Identity.Api.Authentication.Models;
+using Identity.Api.Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -30,10 +30,10 @@ public class JwtTokenService : IJwtTokenService
             new("client_id", client.ClientId)
         };
 
-        foreach (var scope in client.Scopes)
+        foreach (var scope in client.AllowedScopes)
         {
             // Adds one claim for each permitted scope.
-            claims.Add(new Claim("scope", scope));
+            claims.Add(new Claim("scope", scope.Scope));
         }
 
         // Creates the cryptographic signing key from your configured secret.

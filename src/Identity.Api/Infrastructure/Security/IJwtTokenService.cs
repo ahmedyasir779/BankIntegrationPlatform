@@ -1,4 +1,4 @@
-using Identity.Api.Authentication.Models;
+using Identity.Api.Domain.Entities;
 
 namespace Identity.Api.Infrastructure.Security;
 
