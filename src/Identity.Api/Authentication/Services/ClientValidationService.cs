@@ -1,4 +1,5 @@
 using Identity.Api.Domain.Entities;
+using Identity.Api.Domain.Exceptions;
 using Identity.Api.Infrastructure.Persistence.Repositories;
 
 namespace Identity.Api.Authentication.Services;
@@ -20,10 +21,13 @@ public class ClientValidationService : IClientValidationService
         var client = await _clientRepository.GetByClientIdAsync(clientId);
 
         if (client is null)
-            return null;
+            throw new InvalidClientException();
 
         if (client.ClientSecret != clientSecret)
-            return null;
+            throw new InvalidClientException();
+
+        if (!client.IsActive)
+            throw new InvalidClientException();
 
         return client;
     }

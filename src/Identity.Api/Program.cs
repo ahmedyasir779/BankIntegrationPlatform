@@ -3,6 +3,9 @@ using Identity.Api.Infrastructure.Security;
 using Identity.Api.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Identity.Api.Infrastructure.Persistence.Repositories;
+using Identity.Api.Application.Interfaces;
+using Identity.Api.Application.Services;
+using Identity.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,8 @@ builder.Services.Configure<JwtSettings>(
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 
 builder.Services.AddScoped<IClientValidationService, ClientValidationService>();
+
+builder.Services.AddScoped<IClientService, ClientService>();
 
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
@@ -37,7 +42,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();
