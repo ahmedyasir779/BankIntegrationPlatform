@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Identity.Api.Authentication.Models;
 using Identity.Api.Authentication.Services;
 using Identity.Api.Infrastructure.Security;
+using System.Linq;
 
 namespace Identity.Api.Controllers;
 
@@ -21,11 +22,11 @@ public class TokenController : ControllerBase
     }
 
     [HttpPost("token")]
-    public IActionResult Token([FromBody] TokenRequest request)
+    public async Task<IActionResult> Token([FromBody] TokenRequest request)
     {
-        Client? client = _clientValidationService.Validate(
-            request.ClientId,
-            request.ClientSecret);
+        var client = await _clientValidationService.ValidateAsync(
+                request.ClientId,
+                request.ClientSecret);
 
         if (client is null)
         {
@@ -43,7 +44,9 @@ public class TokenController : ControllerBase
             AccessToken = accessToken,
             TokenType = "Bearer",
             ExpiresIn = 3600,
-            Scope = string.Join(" ", client.Scopes)
+            Scope = string.Join(
+                " ",
+                client.AllowedScopes.Select(s => s.Scope))
         };
 
         return Ok(response);

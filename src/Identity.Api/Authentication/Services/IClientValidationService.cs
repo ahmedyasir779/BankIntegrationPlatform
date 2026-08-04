@@ -1,8 +1,8 @@
-using Identity.Api.Authentication.Models;
+using Identity.Api.Domain.Entities;
 
 namespace Identity.Api.Authentication.Services;
 
 public interface IClientValidationService
 {
-    Client? Validate(string clientId, string clientSecret);
+    Task<Client?> ValidateAsync(string clientId, string clientSecret);
 }
