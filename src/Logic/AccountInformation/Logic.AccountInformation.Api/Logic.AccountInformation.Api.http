@@ -1,0 +1,6 @@
+@Logic.AccountInformation.Api_HostAddress = http://localhost:5121
+
+GET {{Logic.AccountInformation.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
