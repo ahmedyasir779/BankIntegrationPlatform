@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="B2B.AccountInformation.Api/B2B.AccountInformation.Api.csproj" />
+  <Project Path="B2B.AccountInformation.Core/B2B.AccountInformation.Core.csproj" />
+  <Project Path="B2B.AccountInformation.Infrastructure/B2B.AccountInformation.Infrastructure.csproj" />
+  <Project Path="B2B.AccountInformation.Shared/B2B.AccountInformation.Shared.csproj" />
+</Solution>

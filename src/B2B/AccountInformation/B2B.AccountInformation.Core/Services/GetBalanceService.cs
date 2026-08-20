@@ -5,17 +5,16 @@ namespace B2B.AccountInformation.Core.Services;
 
 public class GetBalanceService : IGetBalanceService
 {
-    private readonly IBankIntegrationClient _bankIntegrationClient;
+    private readonly ILogicClient _logicClient;
 
-    public GetBalanceService(
-        IBankIntegrationClient bankIntegrationClient)
+    public GetBalanceService(ILogicClient logicClient)
     {
-        _bankIntegrationClient = bankIntegrationClient;
+        _logicClient = logicClient;
     }
 
     public async Task<GetBalanceResponse> GetBalanceAsync(
         GetBalanceRequest request)
     {
-        return await _bankIntegrationClient.GetBalanceAsync(request);
+        return await _logicClient.GetBalanceAsync(request);
     }
 }

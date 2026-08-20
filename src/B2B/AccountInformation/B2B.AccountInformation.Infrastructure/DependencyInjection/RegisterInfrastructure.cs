@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Net.Http.Headers;
 using B2B.AccountInformation.Core.Interfaces;
-using B2B.AccountInformation.Infrastructure.External.BankIntegration;
+using B2B.AccountInformation.Infrastructure.Common;
+using B2B.AccountInformation.Infrastructure.External.Logic;
 
 namespace B2B.AccountInformation.Infrastructure.DependencyInjection;
 
@@ -13,22 +13,21 @@ public static class RegisterInfrastructure
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<BankIntegrationOptions>(
-            configuration.GetSection(BankIntegrationOptions.SectionName));
+        services.Configure<LogicOptions>(
+            configuration.GetSection(LogicOptions.SectionName));
 
-        services.AddHttpClient<IBankIntegrationClient, BankIntegrationClient>(
+        services.AddHttpContextAccessor();
+
+        services.AddScoped<IRequestContextAccessor, RequestContextAccessor>();
+
+        services.AddHttpClient<ILogicClient, LogicClient>(
             (provider, client) =>
             {
                 var options = provider
-                    .GetRequiredService<IOptions<BankIntegrationOptions>>()
+                    .GetRequiredService<IOptions<LogicOptions>>()
                     .Value;
 
                 client.BaseAddress = new Uri(options.BaseUrl);
-
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(
-                        "Bearer",
-                        options.AccessToken);
             });
 
         return services;
