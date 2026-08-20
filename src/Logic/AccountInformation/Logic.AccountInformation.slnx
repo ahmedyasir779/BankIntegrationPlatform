@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Logic.AccountInformation.Api/Logic.AccountInformation.Api.csproj" />
+  <Project Path="Logic.AccountInformation.Core/Logic.AccountInformation.Core.csproj" />
+  <Project Path="Logic.AccountInformation.Infrastructure/Logic.AccountInformation.Infrastructure.csproj" />
+  <Project Path="Logic.AccountInformation.Shared/Logic.AccountInformation.Shared.csproj" />
+</Solution>

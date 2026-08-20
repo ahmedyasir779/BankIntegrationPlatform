@@ -1,6 +1,6 @@
-using BankIntegrationPlatform.Domain.Models;
+using BankIntegration.Api.Domain.Models;
 
-namespace BankIntegrationPlatform.Application.Interfaces;
+namespace BankIntegration.Api.Application.Interfaces;
 
 public interface IBankService
 {

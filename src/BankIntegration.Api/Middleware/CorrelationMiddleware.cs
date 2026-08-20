@@ -1,40 +1,58 @@
-namespace BankIntegrationPlatform.Middleware;
+namespace BankIntegration.Api.Middleware;
 
-using BankIntegrationPlatform.Common;
+using BankIntegration.Api.Common;
 public class CorrelationMiddleware
 {
     private const string HeaderName = "X-Correlation-Id";
 
     private readonly RequestDelegate _next;
+    // private readonly IRequestContextAccessor _requestContextAccessor;
 
-    public CorrelationMiddleware(RequestDelegate next)
+    public CorrelationMiddleware(
+        RequestDelegate next)
     {
         _next = next;
     }
 
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(
+        HttpContext context,
+        IRequestContextAccessor requestContextAccessor)
     {
-        // Check if the client already sent a Correlation ID.
-        string correlationId =
-            context.Request.Headers.TryGetValue(HeaderName, out var headerValue)
-                ? headerValue.ToString()
-                : Guid.NewGuid().ToString();
+        Guid correlationId;
+        
+        if (context.Request.Headers.TryGetValue(HeaderName, out var headerValue)
+            && Guid.TryParse(headerValue, out var parsedId))
+        {
+            correlationId = parsedId;
+        }
+        else
+        {
+            correlationId = Guid.NewGuid();
+        }
 
-        // Store it for the rest of this request.
-        context.Items[HttpContextKeys.CorrelationId] = correlationId;
+        var requestContext = new RequestContext
+        {
+            CorrelationId = correlationId,
+            MessageId = Guid.NewGuid(),
+            RequestTimeUtc = DateTime.UtcNow,
+            ServiceName = "BankIntegration.Api",
+            ApiVersion = "v1",
+            RequestPath = context.Request.Path,
+            HttpMethod = context.Request.Method
+        };
 
-        // we use OnStarting to make him run this code before the header is sent
+        requestContextAccessor.Context = requestContext;
+        // context.Items[HttpContextKeys.RequestContext] = requestContext;
+
         context.Response.OnStarting(() =>
         {
-            context.Response.Headers[HeaderName] = correlationId;
+            context.Response.Headers[HeaderName] =
+                requestContext.CorrelationId.ToString();
+
             return Task.CompletedTask;
         });
 
-        // Continue to the next middleware.
         await _next(context);
-
-        // Include it in the response sent back to the client.
-        // context.Response.Headers[HeaderName] = correlationId;
     }
 }

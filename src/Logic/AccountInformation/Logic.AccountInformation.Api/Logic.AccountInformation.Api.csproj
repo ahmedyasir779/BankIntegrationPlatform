@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Logic.AccountInformation.Core\Logic.AccountInformation.Core.csproj" />
+    <ProjectReference Include="..\Logic.AccountInformation.Infrastructure\Logic.AccountInformation.Infrastructure.csproj" />
+    <ProjectReference Include="..\Logic.AccountInformation.Shared\Logic.AccountInformation.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
