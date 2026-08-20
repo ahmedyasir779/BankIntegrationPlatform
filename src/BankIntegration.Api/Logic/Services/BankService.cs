@@ -41,11 +41,11 @@ public class BankService : IBankService
             Bank: {Bank}
             Account: {Account}
             """,
-            _requestContext.Context.CorrelationId,
-            _requestContext.Context.MessageId,
-            _requestContext.Context.ServiceName,
-            _requestContext.Context.HttpMethod,
-            _requestContext.Context.RequestPath,
+            context.CorrelationId,
+            context.MessageId,
+            context.ServiceName,
+            context.HttpMethod,
+            context.RequestPath,
             request.BankCode,
             request.AccountNumber);
 
@@ -78,8 +78,8 @@ public class BankService : IBankService
             MessageId: {MessageId}
             Duration: {Duration} ms
             """,
-            _requestContext.Context.CorrelationId,
-            _requestContext.Context.MessageId,
+            context.CorrelationId,
+            context.MessageId,
             stopwatch.ElapsedMilliseconds);
 
         return new BalanceResponse

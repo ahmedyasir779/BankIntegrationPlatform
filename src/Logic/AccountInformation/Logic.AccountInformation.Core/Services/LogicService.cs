@@ -9,15 +9,36 @@ public class LogicService : ILogicService
 {
     private readonly IBankIntegrationClient _bankIntegrationClient;
 
+    private readonly ILogger<LogicService> _logger;
+
     public LogicService(
-        IBankIntegrationClient bankIntegrationClient)
+        IBankIntegrationClient bankIntegrationClient,
+        ILogger<ClientService> logger)
     {
         _bankIntegrationClient = bankIntegrationClient;
+        _logger = logger;
     }
 
     public async Task<GetBalanceResponse> GetBalanceAsync(
         GetBalanceRequest request)
     {
-        return await _bankIntegrationClient.GetBalanceAsync(request);
+        _logger.LogInformation(
+            """
+            Request started.
+            """);
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+        var response = await _bankIntegrationClient.GetBalanceAsync(request);
+
+        stopwatch.Stop();
+
+         _logger.LogInformation(
+            """
+            Request completed.
+            Duration: {Duration} ms
+            """,
+            stopwatch.ElapsedMilliseconds);
+
+        return response;
     }
 }
