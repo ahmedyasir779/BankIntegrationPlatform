@@ -10,13 +10,24 @@ public class ClientService : IClientService
 {
     private readonly IClientRepository _repository;
 
-    public ClientService(IClientRepository repository)
+    private readonly ILogger<ClientService> _logger;
+
+    public ClientService(
+        IClientRepository repository,
+        ILogger<ClientService> logger)
     {
         _repository = repository;
+        _logger = logger;
     }
 
     public async Task<List<ClientResponse>> GetAllAsync()
     {
+        // Testing the Logger
+        _logger.LogInformation(
+            """
+            Request started.
+            """);
+
         var clients = await _repository.GetAllAsync();
 
         return clients.Select(MapToResponse).ToList();
@@ -27,7 +38,7 @@ public class ClientService : IClientService
         var client = await _repository.GetByIdAsync(id);
 
         if (client is null)
-            return null;
+            throw new ClientNotFoundException(id);
 
         return MapToResponse(client);
     }
@@ -49,8 +60,7 @@ public class ClientService : IClientService
                 .Select(s => new ClientScope
                 {
                     Scope = s
-                })
-                .ToList()
+                }).ToList()
         };
 
         await _repository.AddAsync(client);
@@ -72,8 +82,7 @@ public class ClientService : IClientService
             .Select(s => new ClientScope
             {
                 Scope = s
-            })
-            .ToList();
+            }).ToList();
 
         await _repository.UpdateAsync(client);
 
